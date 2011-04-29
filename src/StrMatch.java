@@ -44,7 +44,7 @@ public class StrMatch {
 	//Brute Force Algorithm
 	public static int bruteForce(String pattern, String source){
 		
-		for(int i = 0; i < source.length() - pattern.length(); i++){
+		for(int i = 0; i < source.length() - pattern.length()+1; i++){
 			int tempi = i;
 			boolean match = true;
 			for(int j = 0; j < pattern.length() & match; j++, tempi++){
@@ -92,6 +92,12 @@ public class StrMatch {
 		
 		return -1;
 	}
+
+	private static int partialMatch(int i) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 	// Boyer-Moore Algorithm
 	public static int boyerMoore(String pattern, String source){
