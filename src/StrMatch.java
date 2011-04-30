@@ -60,10 +60,15 @@ public class StrMatch {
 		return -1;
 	}
 
-	/*
+	
 	// Rabin-Karp Algorithm
-	public static int rabinKarp(String pattern, String source) {
-		assert pattern.length() > source.length() : "pattern needs to be longer than source";
+	public static int rabinKarp(String pattern, LookBackStringBuffer source) throws IOException, Exception {
+		
+		if(!source.hasAvailable(pattern.length())){
+			return -1;
+		}
+		
+		String sub = new String();
 		
 		int primeN = 47;
 		int pl = pattern.length();
@@ -74,31 +79,96 @@ public class StrMatch {
 		for(int i = 0; i < pattern.length(); i++){
 			//calculate the whole pattern hash
 			long patternCharInt = pattern.charAt(i);
-			patternHC = (patternHC%primeN + patternCharInt)%primeN;
+			patternHC += patternCharInt;
 			//calculate first source has
-			long sourceCharInt = source.charAt(i);
-			sourceHC = (sourceHC%primeN + sourceCharInt)%primeN;
+			char sourceChar = source.charAt(i);
+			long sourceCharInt = (long) sourceChar;
+			sourceHC += sourceCharInt;
+			
+			sub += sourceChar;
 		}
 		
-		System.out.println("pattern: " + patternHC + " source: " + sourceHC);
+		//System.out.println("pattern: " + patternHC + " source: " + sourceHC);
 		
-		for(int i = pattern.length()-1; i <= source.length() - pattern.length() + 1; i++){
-			System.out.println(source.charAt(i));
-			System.out.println("sourceHC " + sourceHC);
+		for(int i = pattern.length()-1; source.hasAvailable(i + 1); i++){
+			//System.out.println("sourceHC " + sourceHC);
 			if(patternHC == sourceHC){
-				if(bruteForce(pattern, source.substring(i-pl+1, i+pl-1)) != -1){
+				if(bruteForce(pattern, new LookBackStringBuffer(sub)) != -1){
 					return 1;
 				}
 			}
+			//System.out.println(source.charAt(i));
+			
+			if(!source.hasAvailable(i+2)){
+				break;
+			}
+			
+			char next = source.charAt(i+1);
+			long nextC = (long)next;
+			sub = sub.substring(1, sub.length()) + next;
+			long prevHC = source.charAt(i - pattern.length() + 1);
+			sourceHC = sourceHC - prevHC + nextC;
+			
+			//System.out.println("prev: " + prevHC);
+			
+			
+			//System.out.println("next: " + nextC + " source: " + sourceHC);
+		}
+		
 
-			long nextC = source.charAt(i+1)%primeN;
-			long prevHC = source.charAt(i - pattern.length() + 1)%primeN;
-			sourceHC = sourceHC%primeN - prevHC%primeN + nextC%primeN;
+		return -1;
+	}
+	
+	/*
+	 * // Rabin-Karp Algorithm
+	public static int rabinKarp(String pattern, String source) throws IOException, Exception {
+		assert pattern.length() < source.length() : "pattern needs to be longer than source";
+		
+		String sub = new String();
+		
+		int primeN = 47;
+		int pl = pattern.length();
+		
+		long patternHC = 0;
+		long sourceHC = 0;
+		
+		for(int i = 0; i < pattern.length(); i++){
+			//calculate the whole pattern hash
+			long patternCharInt = pattern.charAt(i);
+			patternHC += patternCharInt;
+			//calculate first source has
+			char sourceChar = source.charAt(i);
+			long sourceCharInt = (long) sourceChar;
+			sourceHC += sourceCharInt;
 			
-			System.out.println("prev: " + prevHC);
+			sub += sourceChar;
+		}
+		
+		//System.out.println("pattern: " + patternHC + " source: " + sourceHC);
+		
+		for(int i = pattern.length()-1; i < source.length(); i++){
+			//System.out.println("sourceHC " + sourceHC);
+			if(patternHC == sourceHC){
+				if(bruteForce(pattern, new LookBackStringBuffer(sub)) != -1){
+					return 1;
+				}
+			}
+			//System.out.println(source.charAt(i));
+			
+			if(i+1 >= source.length()){
+				break;
+			}
+			
+			char next = source.charAt(i+1);
+			long nextC = (long)next;
+			sub = sub.substring(1, sub.length()) + next;
+			long prevHC = source.charAt(i - pattern.length() + 1);
+			sourceHC = sourceHC - prevHC + nextC;
+			
+			//System.out.println("prev: " + prevHC);
 			
 			
-			System.out.println("next: " + nextC + " source: " + sourceHC);
+			//System.out.println("next: " + nextC + " source: " + sourceHC);
 		}
 		
 
@@ -132,17 +202,17 @@ public class StrMatch {
 	}
 
 	// Knuth-Morris-Pratt Algorithm
-	public static int knuthMorrisPratt(String pattern, String source) {
+	public static int knuthMorrisPratt(String pattern, LookBackStringBuffer source) throws Exception {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
-		String s = source;
+		LookBackStringBuffer s = source;
 		String w = pattern;
 
 		int m = 0;
 		int i = 0;
-		int[] T = partialMatchTable(w, s);
+		int[] T = partialMatchTable(w);
 
-		while (m + i < s.length()) {
+		while (s.hasAvailable(m + i + 1)) {
 
 			if (w.charAt(i) == s.charAt(m + i)) {
 				if (i == w.length() - 1) {
@@ -163,13 +233,12 @@ public class StrMatch {
 	}
 
 	// partial match table to support Knuth Morris Pratt Algorithm
-	private static int[] partialMatchTable(String pattern, String source) {
+	private static int[] partialMatchTable(String pattern) {
 
 		String w = pattern;
 
-		int[] T = new int[source.length()];
+		int[] T = new int[pattern.length()];
 		T[0] = -1;
-		T[1] = 0;
 
 		int pos = 2;
 		int cnd = 0;
@@ -189,7 +258,7 @@ public class StrMatch {
 
 		return T;
 	}
-
+	
 	/*
 	
 	// Boyer-Moore Algorithm
