@@ -41,6 +41,8 @@ public class StrMatch {
 	public static int bruteForce(String pattern, String source) {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
+		System.out.println("at bruteforce: pattern: " + pattern + "; source: " + source);
+		
 		for (int i = 0; i < source.length() - pattern.length() + 1; i++) {
 			int tempi = i;
 			boolean match = true;
@@ -59,9 +61,72 @@ public class StrMatch {
 
 	// Rabin-Karp Algorithm
 	public static int rabinKarp(String pattern, String source) {
-		int patternHValue = pattern.hashCode();
+		assert pattern.length() > source.length() : "pattern needs to be longer than source";
+		
+		int primeN = 47;
+		int pl = pattern.length();
+		
+		long patternHC = 0;
+		long sourceHC = 0;
+		
+		for(int i = 0; i < pattern.length(); i++){
+			//calculate the whole pattern hash
+			long patternCharInt = pattern.charAt(i);
+			patternHC = (patternHC%primeN + patternCharInt)%primeN;
+			//calculate first source has
+			long sourceCharInt = source.charAt(i);
+			sourceHC = (sourceHC%primeN + sourceCharInt)%primeN;
+		}
+		
+		System.out.println("pattern: " + patternHC + " source: " + sourceHC);
+		
+		for(int i = pattern.length()-1; i <= source.length() - pattern.length() + 1; i++){
+			System.out.println(source.charAt(i));
+			System.out.println("sourceHC " + sourceHC);
+			if(patternHC == sourceHC){
+				if(bruteForce(pattern, source.substring(i-pl+1, i+pl-1)) != -1){
+					return 1;
+				}
+			}
+
+			long nextC = source.charAt(i+1)%primeN;
+			long prevHC = source.charAt(i - pattern.length() + 1)%primeN;
+			sourceHC = sourceHC%primeN - prevHC%primeN + nextC%primeN;
+			
+			System.out.println("prev: " + prevHC);
+			
+			
+			System.out.println("next: " + nextC + " source: " + sourceHC);
+		}
+		
 
 		return -1;
+	}
+	
+	/*
+	 * Fast Modular Exponentiation
+	 */
+	private static long fastExponentiation(long message, long exp, long n) {
+		//shortcut 1 if m > n
+		if(message > n) { 
+			message = message%n; 
+		}
+		
+		//shortcut 2 if e > n-1
+		if(exp > n - 1) { 
+			exp = exp%(n-1); 
+		}
+		
+		long c = 1;
+
+		while (exp != 0) {
+			if (exp % 2 != 0) {
+				c = (c * message) % n;
+			}
+			exp = exp / 2;
+			message = (message * message) % n;
+		}
+		return c;
 	}
 
 	// Knuth-Morris-Pratt Algorithm
@@ -123,6 +188,8 @@ public class StrMatch {
 		return T;
 	}
 
+	/*
+	
 	// Boyer-Moore Algorithm
 	public static int boyerMoore(String pattern, String source) {
 		
@@ -199,6 +266,8 @@ public class StrMatch {
 		//String right = 
 		
 	}
+	
+	*/
 	
 	
 	
