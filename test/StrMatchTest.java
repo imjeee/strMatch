@@ -13,8 +13,15 @@ public class StrMatchTest {
 	@Test
 	public void testBruteForce() {
 		StrMatch s = new StrMatch();
-		assertEquals(1, StrMatch.bruteForce("aqqqq",
-				"bbbbbbbbbbbbaqqqbbbbbbbbaqqqq"));
+		assertEquals(1, StrMatch.bruteForce("",
+				"hello world"));
+	}
+	
+	@Test
+	public void testKMP() {
+		StrMatch s = new StrMatch();
+		assertEquals(1, StrMatch.knuthMorrisPratt("hello",
+				"hello world"));
 	}
 
 }
