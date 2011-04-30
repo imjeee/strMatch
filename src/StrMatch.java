@@ -38,12 +38,13 @@ public class StrMatch {
 	}
 
 	// Brute Force Algorithm
-	public static int bruteForce(String pattern, String source) {
+	public static int bruteForce(String pattern, LookBackStringBuffer source) throws Exception {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
 		System.out.println("at bruteforce: pattern: " + pattern + "; source: " + source);
 		
-		for (int i = 0; i < source.length() - pattern.length() + 1; i++) {
+		//for (int i = 0; i < source.length() - pattern.length() + 1; i++) {
+		for (int i = 0; source.hasAvailable(i + pattern.length()); i++){
 			int tempi = i;
 			boolean match = true;
 			for (int j = 0; j < pattern.length() & match; j++, tempi++) {
@@ -59,6 +60,7 @@ public class StrMatch {
 		return -1;
 	}
 
+	/*
 	// Rabin-Karp Algorithm
 	public static int rabinKarp(String pattern, String source) {
 		assert pattern.length() > source.length() : "pattern needs to be longer than source";
@@ -101,7 +103,7 @@ public class StrMatch {
 		
 
 		return -1;
-	}
+	}*/
 	
 	/*
 	 * Fast Modular Exponentiation
@@ -310,5 +312,9 @@ public class StrMatch {
 	 * (third case: we have run out of candidates. Note cnd = 0) otherwise, let
 	 * T[pos] ← 0, pos ← pos + 1
 	 */
+	
+	
+	
+	
 
 }
