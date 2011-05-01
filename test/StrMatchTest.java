@@ -28,8 +28,8 @@ public class StrMatchTest {
 	public void testBM() throws Exception {
 		StrMatch s = new StrMatch();
 		LookBackStringBuffer lbsb = new LookBackStringBuffer(
-		"he\\llo world my name is ryan, but i can't play with black ppl.");
-		assertEquals(1,s.boyerMoore("can't", lbsb));
+		"hello world my name is ryan, but i can't play with black ppl.");
+		assertEquals(1,s.boyerMoore("hello world my name is ryan, but i can't play with black ppl.", lbsb));
 	}
 
 	// @Test
@@ -49,5 +49,7 @@ public class StrMatchTest {
 		// assertEquals(1, s.rabinKarp("world", lbsb));
 		assertEquals(1, s.rabinKarp("d", lbsb));
 	}
+	
+	
 
 }

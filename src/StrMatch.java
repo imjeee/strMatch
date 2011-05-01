@@ -1,11 +1,12 @@
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class StrMatch {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		if (args.length != 3) {
 			throw new IllegalArgumentException(
 					"usage: pattern.txt source.txt results.txt");
@@ -16,24 +17,53 @@ public class StrMatch {
 		String results = args[2];
 
 		File p;
-
+		FileReader fr = null;
 		ArrayList<String> eachPattern = new ArrayList<String>();
+		int patternLength = 2048;
+		int largestps = 2048;	//longest pattern size
 
+		
 		try {
 			// read pattern
 			p = new File(pattern);
 			Scanner scan = new Scanner(p).useDelimiter("&");
 			while (scan.hasNext()) {
 				String thisPattern = scan.next();
+				
+				if(thisPattern.length() > largestps){
+					largestps = thisPattern.length();
+				}
+				
 				if (thisPattern.trim().length() != 0) {
 					System.out.println(thisPattern);
 					eachPattern.add(thisPattern);
 				}
 			}
+			
+			fr = new FileReader(source);
+			LookBackStringBuffer lbsb = new LookBackStringBuffer(source, largestps);
+			
+			
+			for(String s : eachPattern){
+				
+				
+				lbsb.reset();
+				System.out.println("bruteFoce: " + bruteForce(s, lbsb));
+				lbsb.reset();
+				System.out.println("rabinKarp: " + rabinKarp(s, lbsb));
+				lbsb.reset();
+				System.out.println("knuthMorrisPratt: " + knuthMorrisPratt(s, lbsb));
+				lbsb.reset();
+				System.out.println("boyerMoore: " + boyerMoore(s, lbsb));
+
+			}
 
 		} catch (IOException e) {
 			System.out.println("could not read pattern file: " + args[0]);
 		}
+		
+		
+
 
 	}
 
@@ -42,8 +72,7 @@ public class StrMatch {
 			throws Exception {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
-		System.out.println("at bruteforce: pattern: " + pattern + "; source: "
-				+ source);
+		//System.out.println("at bruteforce: pattern: " + pattern + "; source: " + source);
 
 		// for (int i = 0; i < source.length() - pattern.length() + 1; i++) {
 		for (int i = 0; source.hasAvailable(i + pattern.length()); i++) {
@@ -229,7 +258,7 @@ public class StrMatch {
 		int[] goodSuffix = prepare_goodSuffix(pattern);
 
 		int s = 0;
-		while (source.hasAvailable(s)) {
+		while (source.hasAvailable(s + pl)) {
 			int j = pl;
 			while (j > 0 && pattern.charAt(j - 1) == source.charAt(s + j - 1)) {
 				j--;
@@ -251,7 +280,7 @@ public class StrMatch {
 	}
 
 	//computer prefix
-	private static int[] computer_prefix(String str) {
+	private static int[] compute_prefix(String str) {
 
 		int size = str.length();
 		int[] result = new int[size];
@@ -279,7 +308,7 @@ public class StrMatch {
 	private static int[] prepare_badcharacter(String str) {
 
 		int size = str.length();
-		int charE = 10000;
+		int charE = 256;
 		int[] result = new int[charE];
 
 		for (int i = 0; i < charE; i++) {
@@ -307,8 +336,8 @@ public class StrMatch {
 
 		String reversed = sb.toString();
 
-		int[] prefix_normal = computer_prefix(str);
-		int[] prefix_reverse = computer_prefix(reversed);
+		int[] prefix_normal = compute_prefix(str);
+		int[] prefix_reverse = compute_prefix(reversed);
 
 		for (int i = 0; i <= size; i++) {
 			result[i] = size - prefix_normal[size - 1];

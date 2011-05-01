@@ -1,10 +1,18 @@
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
 public class LookBackStringBuffer {
 
+	private String str;
+	
+	private boolean usingFile;
+	
+	private String fileName;
+	
 	private char[] line1;
 	private char[] line2;
 	private int lineWidth;
@@ -16,6 +24,12 @@ public class LookBackStringBuffer {
 	private BufferedReader br;
 
 	public LookBackStringBuffer(String s) throws IOException {
+		offset = 0;
+		size = 0;
+		
+		str = s;
+		usingFile = false;
+		
 		StringReader sr = new StringReader(s);
 		br = new BufferedReader(sr);
 
@@ -30,8 +44,14 @@ public class LookBackStringBuffer {
 
 	}
 
-	public LookBackStringBuffer(FileReader fr, int n) throws IOException {
-		br = new BufferedReader(fr);
+	public LookBackStringBuffer(String fileName, int n) throws IOException {
+		offset = 0;
+		size = 0;
+		
+		usingFile = true;
+		
+		this.fileName = fileName;
+		br = new BufferedReader(new FileReader(new File(fileName)));
 
 		lineWidth = n;
 
@@ -42,6 +62,27 @@ public class LookBackStringBuffer {
 
 		fillLines();
 
+	}
+	
+	public void reset() throws IOException{
+		if (usingFile){
+			br = new BufferedReader(new FileReader(new File(fileName))); 
+		}
+		else {
+			br = new BufferedReader(new StringReader(str));
+		}
+		
+		offset = 0;
+		size = 0;
+		
+		line1 = new char[lineWidth];
+		line2 = new char[lineWidth];
+
+		end = false;
+
+		fillLines();
+		
+		
 	}
 
 	private void printBuffer() {
