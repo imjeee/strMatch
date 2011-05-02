@@ -1,0 +1,8 @@
+Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;

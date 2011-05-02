@@ -1,0 +1,2 @@
+As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
