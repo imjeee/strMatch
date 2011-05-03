@@ -291,7 +291,7 @@ public class StrMatch {
 		result[1] += pl + pl;
 		
 		int s = 0;
-		while (source.hasAvailable(s - pl)) {
+		while (source.hasAvailable(s + pl)) {
 			result[1]++;
 			int j = pl;
 			while (j > 0 && (pattern.charAt(j - 1) == source.charAt(s + j - 1))) {
