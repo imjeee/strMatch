@@ -19,7 +19,6 @@ public class StrMatch {
 		File p;
 		FileReader fr = null;
 		ArrayList<String> eachPattern = new ArrayList<String>();
-		int patternLength = 2048;
 		int largestps = 2048;	//longest pattern size
 
 		
@@ -35,31 +34,41 @@ public class StrMatch {
 				}
 				
 				if (thisPattern.trim().length() != 0) {
-					System.out.println(thisPattern);
+					//System.out.println(thisPattern);
 					eachPattern.add(thisPattern);
 				}
 			}
+		} catch (IOException e){
+			System.out.println("could not read pattern file: " + pattern);
+			System.out.println(e);
+		}
 			
+		try {	
 			fr = new FileReader(source);
 			LookBackStringBuffer lbsb = new LookBackStringBuffer(source, largestps);
 			
 			
 			for(String s : eachPattern){
 				
+				System.out.println("*********pattern: ");
+				System.out.println(s);
 				
 				lbsb.reset();
-				System.out.println("bruteFoce: " + bruteForce(s, lbsb));
+				System.out.println("bruteFoce:");
+				System.out.println(bruteForce(s, lbsb)[0]);
 				lbsb.reset();
-				System.out.println("rabinKarp: " + rabinKarp(s, lbsb));
+				System.out.println("rabinKarp:");
+				System.out.println(rabinKarp(s, lbsb)[0]);
 				lbsb.reset();
-				System.out.println("knuthMorrisPratt: " + knuthMorrisPratt(s, lbsb));
+				System.out.println("knuthMorrisPratt:");
+				System.out.println(knuthMorrisPratt(s, lbsb)[0]);
 				lbsb.reset();
-				System.out.println("boyerMoore: " + boyerMoore(s, lbsb));
+				System.out.println("boyerMoore: " + boyerMoore(s, lbsb)[0]);
 
 			}
 
 		} catch (IOException e) {
-			System.out.println("could not read pattern file: " + args[0]);
+			System.out.println("could not read sourece file: " + source);
 		}
 		
 		
@@ -68,35 +77,40 @@ public class StrMatch {
 	}
 
 	// Brute Force Algorithm
-	public static int bruteForce(String pattern, LookBackStringBuffer source)
+	public static long[] bruteForce(String pattern, LookBackStringBuffer source)
 			throws Exception {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
-		//System.out.println("at bruteforce: pattern: " + pattern + "; source: " + source);
+		//result[0] shows success or failure, result[1] shows number of comparisons
+		long[] result = new long[2];
 
 		// for (int i = 0; i < source.length() - pattern.length() + 1; i++) {
 		for (int i = 0; source.hasAvailable(i + pattern.length()); i++) {
 			int tempi = i;
 			boolean match = true;
 			for (int j = 0; j < pattern.length() & match; j++, tempi++) {
+				result[1]++;
 				if (source.charAt(tempi) != pattern.charAt(j)) {
 					match = false;
 				}
 			}
 			if (match) {
-				return 1;
+				result[0] = 1;
+				return result;
 			}
 		}
 
-		return -1;
+		return result;
 	}
 
 	// Rabin-Karp Algorithm, Rolling linear sum
-	public static int rabinKarp(String pattern, LookBackStringBuffer source)
+	public static long[] rabinKarp(String pattern, LookBackStringBuffer source)
 			throws IOException, Exception {
 
+		long[] result = new long[2];
+		
 		if (!source.hasAvailable(pattern.length())) {
-			return -1;
+			return result;
 		}
 
 		String sub = new String();
@@ -114,6 +128,7 @@ public class StrMatch {
 			sourceHC += sourceCharInt;
 
 			sub += sourceChar;
+			result[1]++;
 		}
 
 		// System.out.println("pattern: " + patternHC + " source: " + sourceHC);
@@ -121,8 +136,14 @@ public class StrMatch {
 		for (int i = pattern.length() - 1; source.hasAvailable(i + 1); i++) {
 			// System.out.println("sourceHC " + sourceHC);
 			if (patternHC == sourceHC) {
-				if (bruteForce(pattern, new LookBackStringBuffer(sub)) != -1) {
-					return 1;
+				
+				long[] temp = bruteForce(pattern, new LookBackStringBuffer(sub));
+				
+				result[1] += temp[1];
+				result[0] = temp[0];
+				
+				if (result[0] == 1) {
+					return result;
 				}
 			}
 			// System.out.println(source.charAt(i));
@@ -137,12 +158,14 @@ public class StrMatch {
 			long prevHC = source.charAt(i - pattern.length() + 1);
 			sourceHC = sourceHC - prevHC + nextC;
 
+			result[1]++;
+			
 			// System.out.println("prev: " + prevHC);
 
 			// System.out.println("next: " + nextC + " source: " + sourceHC);
 		}
 
-		return -1;
+		return result;
 	}
 
 	/*
@@ -187,10 +210,14 @@ public class StrMatch {
 	 */
 
 	// Knuth-Morris-Pratt Algorithm
-	public static int knuthMorrisPratt(String pattern,
+	public static long[] knuthMorrisPratt(String pattern,
 			LookBackStringBuffer source) throws Exception {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
+		long[] result = new long[2];
+		result[1] += pattern.length();
+		
+		
 		LookBackStringBuffer s = source;
 		String w = pattern;
 
@@ -200,9 +227,12 @@ public class StrMatch {
 
 		while (s.hasAvailable(m + i + 1)) {
 
+			result[1]++;
+			
 			if (w.charAt(i) == s.charAt(m + i)) {
 				if (i == w.length() - 1) {
-					return 1;
+					result[0] = 1;
+					return result;
 				}
 				i++;
 			} else {
@@ -215,7 +245,7 @@ public class StrMatch {
 			}
 		}
 
-		return -1;
+		return result;
 	}
 
 	// partial match table to support Knuth Morris Pratt Algorithm
@@ -246,25 +276,29 @@ public class StrMatch {
 	}
 
 	// Boyer-Moore Algorithm
-	public static int boyerMoore(String pattern, LookBackStringBuffer source) throws Exception {
+	public static long[] boyerMoore(String pattern, LookBackStringBuffer source) throws Exception {
 
+		long result[] = new long[2];
 		int pl = pattern.length();
 
 		if (pl == 0 | !source.hasAvailable(0)) {
-			return -1;
+			return result;
 		}
 
 		int[] badcharacter = prepare_badcharacter(pattern);
 		int[] goodSuffix = prepare_goodSuffix(pattern);
 
+		result[1] += pl + pl;
+		
 		int s = 0;
-		while (source.hasAvailable(s + pl)) {
+		while (source.hasAvailable(s - pl)) {
+			result[1]++;
 			int j = pl;
-			while (j > 0 && pattern.charAt(j - 1) == source.charAt(s + j - 1)) {
+			while (j > 0 && (pattern.charAt(j - 1) == source.charAt(s + j - 1))) {
 				j--;
 			}
 			if (j > 0) {
-				int k = badcharacter[source.charAt(s + j - 1)];
+				int k = badcharacter[(int) source.charAt(s + j - 1)];
 				int m = j - k - 1;
 				if (k < j & m > goodSuffix[j]) {
 					s += m;
@@ -272,10 +306,11 @@ public class StrMatch {
 					s += goodSuffix[j];
 				}
 			} else {
-				return 1;
+				result[0] = 1;
+				return result;
 			}
 		}
-		return -1;
+		return result;
 
 	}
 
@@ -286,11 +321,12 @@ public class StrMatch {
 		int[] result = new int[size];
 
 		int k = 0;
-		result[0] = 0;
 
 		for (int q = 1; q < size; q++) {
+			
 			char ck = str.charAt(k);
 			char cq = str.charAt(q);
+			
 			while (k > 0 && ck != cq) {
 				k = result[k - 1];
 			}
@@ -308,7 +344,7 @@ public class StrMatch {
 	private static int[] prepare_badcharacter(String str) {
 
 		int size = str.length();
-		int charE = 256;
+		int charE = 1024;
 		int[] result = new int[charE];
 
 		for (int i = 0; i < charE; i++) {
@@ -326,7 +362,7 @@ public class StrMatch {
 	private static int[] prepare_goodSuffix(String str) {
 
 		int size = str.length();
-		int[] result = new int[str.length() + 1];
+		int[] result = new int[size + 1];
 
 		// reverse string
 		StringBuffer sb = new StringBuffer(str.length());
@@ -354,28 +390,6 @@ public class StrMatch {
 		return result;
 	}
 
-	/*
-	 * void prepare_goodsuffix_heuristic(const char *normal, size_t size, int
-	 * result[size + 1]) {
-	 * 
-	 * char *left = (char *) normal; char *right = left + size; char
-	 * reversed[size+1]; char *tmp = reversed + size; size_t i;
-	 * 
-	 * 
-	 * tmp = 0; while (left < right)(--tmp) = *(left++);
-	 * 
-	 * int prefix_normal[size]; int prefix_reversed[size];
-	 * 
-	 * compute_prefix(normal, size, prefix_normal); compute_prefix(reversed,
-	 * size, prefix_reversed);
-	 * 
-	 * for (i = 0; i <= size; i++) { result[i] = size - prefix_normal[size-1]; }
-	 * 
-	 * for (i = 0; i < size; i++) { const int j = size - prefix_reversed[i];
-	 * const int k = i - prefix_reversed[i]+1;
-	 * 
-	 * if (result[j] > k) result[j] = k; } }
-	 */
 
 	/*
 	 * Knuth Morris Pratt Algorithm*******************************************
