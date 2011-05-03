@@ -93,8 +93,9 @@ public class StrMatch {
 		for (int i = 0; source.hasAvailable(i + pattern.length()); i++) {
 			int tempi = i;
 			boolean match = true;
+			result[1]++;
 			for (int j = 0; j < pattern.length() & match; j++, tempi++) {
-				result[1]++;
+				result[1] += 2;
 				if (source.charAt(tempi) != pattern.charAt(j)) {
 					match = false;
 				}
@@ -112,13 +113,12 @@ public class StrMatch {
 	public static long[] rabinKarp(String pattern, LookBackStringBuffer source)
 			throws IOException, Exception {
 
+		int primeN = 17389;
 		long[] result = new long[2];
 
 		if (!source.hasAvailable(pattern.length())) {
 			return result;
 		}
-
-		String sub = new String();
 
 		long patternHC = 0;
 		long sourceHC = 0;
@@ -131,23 +131,32 @@ public class StrMatch {
 			char sourceChar = source.charAt(i);
 			long sourceCharInt = (long) sourceChar;
 			sourceHC += sourceCharInt;
-
-			sub += sourceChar;
 			result[1]++;
 		}
+		
+		patternHC %= primeN;
+		sourceHC %= primeN;
 
-		for (int i = pattern.length() - 1; source.hasAvailable(i + 1); i++) {
-			// System.out.println("sourceHC " + sourceHC);
+		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
+			result[1] += 2;
 			if (patternHC == sourceHC) {
 
-				long[] temp = bruteForce(pattern, new LookBackStringBuffer(sub));
+				int k = 0;
+				int j = 0;
+				for (j = i - pattern.length(); j < i; j++, k++) {
+					char src = source.charAt(j);
+					char pat = pattern.charAt(k);
+					result[1]++;
 
-				result[1] += temp[1];
-				result[0] = temp[0];
+					if (src != pat)
+						break;
+				}
 
-				if (result[0] == 1) {
+				if (j == i) {
+					result[0] = 1;
 					return result;
 				}
+
 			}
 			// System.out.println(source.charAt(i));
 
@@ -155,13 +164,13 @@ public class StrMatch {
 				break;
 			}
 
-			char next = source.charAt(i + 1);
+			char next = source.charAt(i);
 			long nextC = (long) next;
-			sub = sub.substring(1, sub.length()) + next;
-			long prevHC = source.charAt(i - pattern.length() + 1);
-			sourceHC = sourceHC - prevHC + nextC;
-
-			result[1]++;
+			long prevHC = source.charAt(i - pattern.length());
+			
+			sourceHC = (sourceHC - prevHC)%primeN;
+			sourceHC = (sourceHC + nextC)%primeN;
+			//sourceHC = sourceHC - prevHC + nextC;
 
 			// System.out.println("prev: " + prevHC);
 
@@ -218,7 +227,6 @@ public class StrMatch {
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
 		long[] result = new long[2];
-		result[1] += pattern.length();
 
 		LookBackStringBuffer s = source;
 		String w = pattern;
@@ -226,18 +234,23 @@ public class StrMatch {
 		int m = 0;
 		int i = 0;
 		int[] T = partialMatchTable(w);
-
+		result[1] += w.length()*2;
+		
+//		for (int ii = 0; ii < T.length; ii++) {
+//			System.out.print(T[ii]);
+//		}
+//		System.out.println();
+		
 		while (s.hasAvailable(m + i + 1)) {
 
-			result[1]++;
-
+			result[1] += 2;
 			if (w.charAt(i) == s.charAt(m + i)) {
 				if (i == w.length() - 1) {
 					result[0] = 1;
 					return result;
 				}
 				i++;
-				
+
 			} else {
 				m = m + i - T[i];
 				if (T[i] > -1) {
@@ -251,7 +264,7 @@ public class StrMatch {
 		return result;
 	}
 
-	// partial match table to support Knuth Morris Pratt Algorithm
+	// partial match table to support Knuth-Morris-Pratt Algorithm
 	private static int[] partialMatchTable(String pattern) {
 
 		String w = pattern;
@@ -292,13 +305,12 @@ public class StrMatch {
 		int[] badcharacter = prepare_badcharacter(pattern);
 		int[] goodSuffix = prepare_goodSuffix(pattern);
 
-		result[1] += pl + pl;
-
 		int s = 0;
 		while (source.hasAvailable(s + pl)) {
 			result[1]++;
 			int j = pl;
 			while (j > 0 && (pattern.charAt(j - 1) == source.charAt(s + j - 1))) {
+				result[1]++;
 				j--;
 			}
 			if (j > 0) {

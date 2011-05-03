@@ -85,7 +85,7 @@ public class LookBackStringBuffer {
 		
 	}
 
-	private void printBuffer() {
+	public void printBuffer() {
 		System.out.print("line1: ");
 		for (char c : line1)
 			System.out.print(c);
