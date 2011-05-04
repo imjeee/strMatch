@@ -1,8 +1,3 @@
+&Austin, Texas 78712, USA&
 &3rd IEEE symposium on parallel and distributed processing, pages 810{817,&
-&[54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
-rate coding. IEEE Transactions on Information Theory, IT-24(5):530{536,
-Sept. 1978.&
-&Theory in Programming Practice
-Jayadev Misra
-The University of Texas at Austin
-Austin, Texas 78712, USA&
+&[54] J. Ziv and A. Lempel. Compression of individual sequences via variable-&

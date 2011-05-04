@@ -1,0 +1,12 @@
+RK MATCHED: Austin, Texas 78712, USA
+KMP MATCHED: Austin, Texas 78712, USA
+BM MATCHED: Austin, Texas 78712, USA
+Brute Force MATCHED: Austin, Texas 78712, USA
+RK MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
+KMP MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
+BM MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
+Brute Force MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
+RK MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
+KMP MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
+BM MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
+Brute Force MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-

@@ -1,9 +1,11 @@
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Timer;
+
 
 public class StrMatch {
 
@@ -13,15 +15,21 @@ public class StrMatch {
 					"usage: pattern.txt source.txt results.txt");
 		}
 
+		//pattern file parsing
 		String pattern = args[0];
-		String source = args[1];
-		String results = args[2];
-
 		File p;
-		FileReader fr = null;
 		ArrayList<String> eachPattern = new ArrayList<String>();
 		int largestps = 2048; // longest pattern size
-
+		
+		//source file parsing
+		String source = args[1];
+		FileReader fr = null;
+		
+		//output writer
+		String results = args[2];
+		File outFile = new File(results);
+		StringBuffer output = new StringBuffer();
+		
 		try {
 			// read pattern
 			p = new File(pattern);
@@ -50,40 +58,68 @@ public class StrMatch {
 
 			for (String s : eachPattern) {
 
+				/*
 				System.out.println("*********pattern: ");
 				System.out.println(s);
 				System.out.println();
-
+				*/
+				
 				lbsb.reset();
 				Stopwatch t = new Stopwatch();
+				String found;
 				
-				t.start();
-				long[] bf = bruteForce(s, lbsb);
-				t.stop();
-				System.out.println("bf:  " + bf[0] + " " + bf[1]
-				        + "  " + t.time());
-				lbsb.reset();
-
+				//RK
 				t.start();
 				long[] rk = rabinKarp(s, lbsb);
 				t.stop();
-				System.out.println("rk:  " + rk[0] + " " + rk[1]
-				        + "  " + t.time());
+				
+				found = (rk[0] == 1) ? "MATCHED: " : "FAILED: ";
+				output.append("RK " + found + s + "\n");
 				lbsb.reset();
-
+				
+				System.out.println("rk:  " + rk[0] + " " + rk[1]
+				                      				        + "  " + t.time());
+				
+				//KMP
 				t.start();
 				long[] kmp = knuthMorrisPratt(s, lbsb);
 				t.stop();
-				System.out.println("kmp: " + kmp[0] + " " + kmp[1] 
-				        + "  " + t.time());
+				
+				found = (kmp[0] == 1) ? "MATCHED: " : "FAILED: ";
+				output.append("KMP " + found + s + "\n");
 				lbsb.reset();
-
+				
+				System.out.println("KMP: " + kmp[0] + " " + kmp[1] 
+				                        				        + "  " + t.time());
+				
+				//BM
 				t.start();
 				long[] bm = boyerMoore(s, lbsb);
 				t.stop();
-				System.out.println("bm:  " + bm[0] + " " 
+
+				found = (bm[0] == 1) ? "MATCHED: " : "FAILED: ";
+				output.append("BM " + found + s + "\n");
+				lbsb.reset();
+				
+				System.out.println("BM:  " + bm[0] + " " 
 						+ bm[1] + "   " + t.time());
+				
+				//Brute Force
+				t.start();
+				long[] bf = bruteForce(s, lbsb);
+				t.stop();
+
+				found = (bf[0] == 1) ? "MATCHED: " : "FAILED: ";
+				output.append("Brute Force " + found + s + "\n");
+				
+				System.out.println("BF:  " + bf[0] + " " + bf[1]
+				        + "  " + t.time());
 			}
+			
+			//write the output buffer to output file
+			FileWriter fw = new FileWriter(outFile);
+			fw.write(output.toString());
+			fw.close();
 
 		} catch (IOException e) {
 			System.out.println("could not read sourece file: " + source);
