@@ -134,8 +134,8 @@ public class StrMatch {
 			result[1]++;
 		}
 		
-		patternHC %= primeN;
-		sourceHC %= primeN;
+		//patternHC %= primeN;
+		//sourceHC %= primeN;
 
 		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
 			result[1] += 2;
@@ -168,9 +168,9 @@ public class StrMatch {
 			long nextC = (long) next;
 			long prevHC = source.charAt(i - pattern.length());
 			
-			sourceHC = (sourceHC - prevHC)%primeN;
-			sourceHC = (sourceHC + nextC)%primeN;
-			//sourceHC = sourceHC - prevHC + nextC;
+			//sourceHC = (sourceHC - prevHC)%primeN;
+			//sourceHC = (sourceHC + nextC)%primeN;
+			sourceHC = sourceHC - prevHC + nextC;
 
 			// System.out.println("prev: " + prevHC);
 
@@ -314,7 +314,8 @@ public class StrMatch {
 				j--;
 			}
 			if (j > 0) {
-				int k = badcharacter[(int) source.charAt(s + j - 1)];
+				int x = ((int) source.charAt(s+j-1)) & 255;
+				int k = badcharacter[x];
 				int m = j - k - 1;
 				if (k < j & m > goodSuffix[j]) {
 					s += m;
@@ -360,7 +361,7 @@ public class StrMatch {
 	private static int[] prepare_badcharacter(String str) {
 
 		int size = str.length();
-		int charE = 1024;
+		int charE = 256;
 		int[] result = new int[charE];
 
 		for (int i = 0; i < charE; i++) {
