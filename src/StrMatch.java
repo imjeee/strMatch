@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class StrMatch {
 
 	public static void main(String[] args) throws Exception {
+		
 		if (args.length != 3) {
 			throw new IllegalArgumentException(
 					"usage: pattern.txt source.txt results.txt");
@@ -58,17 +59,17 @@ public class StrMatch {
 
 			for (String s : eachPattern) {
 
-				/*
+				
 				System.out.println("*********pattern: ");
 				System.out.println(s);
 				System.out.println();
-				*/
+				
 				
 				lbsb.reset();
 				Stopwatch t = new Stopwatch();
 				String found;
 				
-				//RK
+				//RK rolling linear sum
 				t.start();
 				long[] rk = rabinKarp(s, lbsb);
 				t.stop();
@@ -78,6 +79,18 @@ public class StrMatch {
 				lbsb.reset();
 				
 				System.out.println("rk:  " + rk[0] + " " + rk[1]
+				                      				        + "  " + t.time());
+				
+				//RK rolling base sum
+				t.start();
+				long[] rk2 = rabinKarp2(s, lbsb);
+				t.stop();
+				
+				found = (rk2[0] == 1) ? "MATCHED: " : "FAILED: ";
+				output.append("RK2 " + found + s + "\n");
+				lbsb.reset();
+				
+				System.out.println("rk2:  " + rk2[0] + " " + rk2[1]
 				                      				        + "  " + t.time());
 				
 				//KMP
@@ -91,6 +104,7 @@ public class StrMatch {
 				
 				System.out.println("KMP: " + kmp[0] + " " + kmp[1] 
 				                        				        + "  " + t.time());
+				
 				
 				//BM
 				t.start();
@@ -161,7 +175,7 @@ public class StrMatch {
 			throws IOException, Exception {
 
 		int primeN = 17389;
-		long[] result = new long[2];
+		long[] result = new long[3];
 
 		if (!source.hasAvailable(pattern.length())) {
 			return result;
@@ -180,13 +194,80 @@ public class StrMatch {
 			sourceHC += sourceCharInt;
 			result[1]++;
 		}
-		
-		//patternHC %= primeN;
-		//sourceHC %= primeN;
 
 		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
 			result[1] += 2;
 			if (patternHC == sourceHC) {
+
+				result[2]++;
+				int k = 0;
+				int j = 0;
+				for (j = i - pattern.length(); j < i; j++, k++) {
+					char src = source.charAt(j);
+					char pat = pattern.charAt(k);
+					result[1]++;
+
+					if (src != pat)
+						break;
+				}
+
+				if (j == i) {
+					result[0] = 1;
+					return result;
+				}
+
+			}
+			
+			if (!source.hasAvailable(i + 1)) {
+				break;
+			}
+
+			char next = source.charAt(i);
+			long nextC = (long) next;
+			long prevHC = source.charAt(i - pattern.length());
+			
+			sourceHC = sourceHC - prevHC + nextC;
+		}
+
+		return result;
+	}
+	
+	// Rabin-Karp Algorithm, Rolling base sum
+	public static long[] rabinKarp2(String pattern, LookBackStringBuffer source)
+			throws IOException, Exception {
+
+		long p = 17389;
+		long base = 10;
+		long f = fastExp(base, pattern.length()-1, p);
+		
+		
+		
+		long[] result = new long[3];
+
+		if (!source.hasAvailable(pattern.length())) {
+			return result;
+		}
+
+		long patternHC = 0;
+		long sourceHC = 0;
+
+		for (int i = 0; i < pattern.length(); i++) {
+			// calculate the whole pattern hash
+			long patternCharInt = (long)pattern.charAt(i);
+			patternHC = (patternHC * base + patternCharInt) % p;
+			
+			// calculate first source has
+			long sourceCharInt = (long) source.charAt(i);
+			sourceHC = (sourceHC * base + sourceCharInt) % p;
+			result[1]++;
+		}
+		
+		
+
+		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
+			result[1] += 2;
+			if (patternHC == sourceHC) {
+				result[2]++;
 
 				int k = 0;
 				int j = 0;
@@ -205,26 +286,58 @@ public class StrMatch {
 				}
 
 			}
-			// System.out.println(source.charAt(i));
-
-			if (!source.hasAvailable(i + 2)) {
+			
+			if (!source.hasAvailable(i + 1)) {
 				break;
 			}
 
 			char next = source.charAt(i);
 			long nextC = (long) next;
-			long prevHC = source.charAt(i - pattern.length());
+			long prevC = source.charAt(i - pattern.length());
 			
-			//sourceHC = (sourceHC - prevHC)%primeN;
-			//sourceHC = (sourceHC + nextC)%primeN;
-			sourceHC = sourceHC - prevHC + nextC;
-
-			// System.out.println("prev: " + prevHC);
-
-			// System.out.println("next: " + nextC + " source: " + sourceHC);
+			sourceHC = mod(((sourceHC - prevC*f)* base + nextC),p);
+			
 		}
 
 		return result;
+	}
+	
+	/*
+	 * fastExp and reverseBits from Ryan's RSA project
+	 */
+	private static long fastExp (long num, long e, long n){
+		e = reverseBits(e);
+		int skipped = 0;
+		while ((e & 1l) != 1){
+			skipped++;
+			e >>= 1;
+		}
+		long c = 1;
+		for(int remaining = 64 - skipped; remaining > 0; remaining--){
+			if ((e & 1) == 0) {
+				c = ((c*c) % n);
+			}
+			else {
+				c = ((((c*c) % n) * num) % n);
+			}
+			e >>>= 1;
+		} 
+		return c;
+	}
+	private static long reverseBits(long e){
+		e = ((e >>> 1) & 0x5555555555555555l) | ((e & 0x5555555555555555l) << 1);
+		e = ((e >>> 2) & 0x3333333333333333l) | ((e & 0x3333333333333333l) << 2);
+		e = ((e >>> 4) & 0x0F0F0F0F0F0F0F0Fl) | ((e & 0x0F0F0F0F0F0F0F0Fl) << 4);
+		e = ((e >>> 8) & 0x00FF00FF00FF00FFl) | ((e & 0x00FF00FF00FF00FFl) << 8);
+		e = ((e >>> 16) & 0x0000FFFF0000FFFFl) | ((e & 0x0000FFFF0000FFFFl) << 16);
+		e = (e >>> 32) | (e << 32);
+		return e;
+	}
+	
+	
+	
+	public static long mod(long n, long x){
+		return (n >= 0) ? (n % x) : ((n -(n/x - 1)*x)%x);
 	}
 
 	/*
