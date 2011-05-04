@@ -1,12 +1,55 @@
-RK MATCHED: Austin, Texas 78712, USA
-KMP MATCHED: Austin, Texas 78712, USA
-BM MATCHED: Austin, Texas 78712, USA
-Brute Force MATCHED: Austin, Texas 78712, USA
-RK MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
-KMP MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
-BM MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
-Brute Force MATCHED: 3rd IEEE symposium on parallel and distributed processing, pages 810{817,
-RK MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
-KMP MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
-BM MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
-Brute Force MATCHED: [54] J. Ziv and A. Lempel. Compression of individual sequences via variable-
+RK FAILED: Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;
+RK2 FAILED: Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;
+KMP FAILED: Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;
+BM FAILED: Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;
+Brute Force FAILED: Figure 5.4: Davis-Putnam Computation
+5.12.2 Program Development
+Data Structure Here, we consider representation of a formula in Haskell.
+Recall that
+a formula is a conjunction of a set of terms.
+a term is the disjunction of a set of literals, and
+a literal is either a variable or the negation of a variable.
+We can regard a formula as a list of terms and a term as a list of literals;
+RK MATCHED: corresponding to false and true
+RK2 MATCHED: corresponding to false and true
+KMP MATCHED: corresponding to false and true
+BM MATCHED: corresponding to false and true
+Brute Force MATCHED: corresponding to false and true
+RK FAILED: As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
+RK2 FAILED: As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
+KMP FAILED: As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
+BM FAILED: As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
+Brute Force FAILED: As long as neither possibility holds, we have a nonempty formula none of
+whose terms is empty,
