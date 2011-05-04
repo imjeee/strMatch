@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Timer;
 
 public class StrMatch {
 
@@ -54,24 +55,34 @@ public class StrMatch {
 				System.out.println();
 
 				lbsb.reset();
-
+				Stopwatch t = new Stopwatch();
+				
+				t.start();
 				long[] bf = bruteForce(s, lbsb);
-				System.out.println("bruteFoce: " + bf[0] + "        " + bf[1]);
+				t.stop();
+				System.out.println("bf:  " + bf[0] + " " + bf[1]
+				        + "  " + t.time());
 				lbsb.reset();
 
+				t.start();
 				long[] rk = rabinKarp(s, lbsb);
-				System.out.println("rabinKarp: " + rk[0] + "        " + rk[1]);
+				t.stop();
+				System.out.println("rk:  " + rk[0] + " " + rk[1]
+				        + "  " + t.time());
 				lbsb.reset();
 
+				t.start();
 				long[] kmp = knuthMorrisPratt(s, lbsb);
-				System.out
-						.println("knuthMorrisPratt: " + kmp[0] + " " + kmp[1]);
+				t.stop();
+				System.out.println("kmp: " + kmp[0] + " " + kmp[1] 
+				        + "  " + t.time());
 				lbsb.reset();
 
+				t.start();
 				long[] bm = boyerMoore(s, lbsb);
-				System.out.println("boyerMoore: " + bm[0] + "       " + bm[1]);
-				System.out.println();
-
+				t.stop();
+				System.out.println("bm:  " + bm[0] + " " 
+						+ bm[1] + "   " + t.time());
 			}
 
 		} catch (IOException e) {
