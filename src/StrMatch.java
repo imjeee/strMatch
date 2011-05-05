@@ -186,7 +186,7 @@ public class StrMatch {
 			sourceHC += sourceCharInt;
 		}
 
-		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
+		for (int i = pattern.length(); source.hasAvailable(i); i++) {
 			result[1]++;
 			if (patternHC == sourceHC) {
 
@@ -250,7 +250,7 @@ public class StrMatch {
 			sourceHC = (sourceHC * base + sourceCharInt) % p;
 		}
 
-		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
+		for (int i = pattern.length(); source.hasAvailable(i); i++) {
 			result[1]++;
 			if (patternHC == sourceHC) {
 				result[2]++;
