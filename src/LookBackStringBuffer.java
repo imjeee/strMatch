@@ -7,6 +7,8 @@ import java.io.StringReader;
 
 public class LookBackStringBuffer {
 
+	private long length;
+	
 	private String str;
 	
 	private boolean usingFile;
@@ -24,6 +26,8 @@ public class LookBackStringBuffer {
 	private BufferedReader br;
 
 	public LookBackStringBuffer(String s) throws IOException {
+		length = s.length();
+		
 		offset = 0;
 		size = 0;
 		
@@ -51,7 +55,9 @@ public class LookBackStringBuffer {
 		usingFile = true;
 		
 		this.fileName = fileName;
-		br = new BufferedReader(new FileReader(new File(fileName)));
+		File f = new File(fileName);
+		length = f.length();
+		br = new BufferedReader(new FileReader(f));
 
 		lineWidth = n;
 
@@ -160,7 +166,7 @@ public class LookBackStringBuffer {
 	}
 
 	public boolean hasAvailable(int x) {
-		int total = x;
+		/*int total = x;
 		int lookFor = total - (offset + size);
 		if (lookFor <= 0)
 			return true;
@@ -184,7 +190,9 @@ public class LookBackStringBuffer {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}
+		}*/
+		
+		return x <= length;
 
 	}
 

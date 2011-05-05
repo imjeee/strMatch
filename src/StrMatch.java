@@ -75,7 +75,7 @@ public class StrMatch {
 				lbsb.reset();
 
 				System.out.println("rk:  " + rk[0] + " " + rk[1] + "  "
-						+ t.time());
+						+ t.time() + " " + rk[2]);
 
 				// RK rolling base sum
 				t.start();
@@ -87,7 +87,7 @@ public class StrMatch {
 				lbsb.reset();
 
 				System.out.println("rk2:  " + rk2[0] + " " + rk2[1] + "  "
-						+ t.time());
+						+ t.time() + " " + rk2[2]);
 
 				// KMP
 				t.start();
@@ -149,9 +149,8 @@ public class StrMatch {
 		for (int i = 0; source.hasAvailable(i + pattern.length()); i++) {
 			int tempi = i;
 			boolean match = true;
-			result[1]++;
 			for (int j = 0; j < pattern.length() & match; j++, tempi++) {
-				result[1] += 2;
+				result[1] += 1;
 				if (source.charAt(tempi) != pattern.charAt(j)) {
 					match = false;
 				}
@@ -186,11 +185,10 @@ public class StrMatch {
 			char sourceChar = source.charAt(i);
 			long sourceCharInt = (long) sourceChar;
 			sourceHC += sourceCharInt;
-			result[1]++;
 		}
 
 		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
-			result[1] += 2;
+			result[1]++;
 			if (patternHC == sourceHC) {
 
 				result[2]++;
@@ -251,11 +249,10 @@ public class StrMatch {
 			// calculate first source has
 			long sourceCharInt = (long) source.charAt(i);
 			sourceHC = (sourceHC * base + sourceCharInt) % p;
-			result[1]++;
 		}
 
 		for (int i = pattern.length(); source.hasAvailable(i + 1); i++) {
-			result[1] += 2;
+			result[1]++;
 			if (patternHC == sourceHC) {
 				result[2]++;
 
@@ -346,7 +343,6 @@ public class StrMatch {
 		int m = 0;
 		int i = 0;
 		int[] T = partialMatchTable(w);
-		result[1] += w.length() * 2;
 
 		// for (int ii = 0; ii < T.length; ii++) {
 		// System.out.print(T[ii]);
@@ -355,7 +351,7 @@ public class StrMatch {
 
 		while (s.hasAvailable(m + i + 1)) {
 
-			result[1] += 2;
+			result[1]++;
 			if (w.charAt(i) == s.charAt(m + i)) {
 				if (i == w.length() - 1) {
 					result[0] = 1;
