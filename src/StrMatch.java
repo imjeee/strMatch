@@ -348,10 +348,10 @@ public class StrMatch {
 		int i = 0;
 		int[] T = partialMatchTable(w);
 
-		// for (int ii = 0; ii < T.length; ii++) {
-		// System.out.print(T[ii]);
-		// }
-		// System.out.println();
+		 for (int ii = 0; ii < T.length; ii++) {
+		 System.out.print(T[ii]);
+		 }
+		 System.out.println();
 
 		while (s.hasAvailable(m + i + 1)) {
 
@@ -520,3 +520,21 @@ public class StrMatch {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
