@@ -11,7 +11,7 @@ public class StrMatchTest {
 	@Test
 	public void testBruteForce() throws Exception {
 		StrMatch s = new StrMatch();
-		LookBackStringBuffer lbsb = new LookBackStringBuffer("hello world my name is ryan, and i can shoot 3s like no others.");
+		StrMatch.LookBackStringBuffer lbsb = new StrMatch.LookBackStringBuffer("hello world my name is ryan, and i can shoot 3s like no others.");
 		long result[] = s.bruteForce("h", lbsb);
 		
 		assertEquals(1, result[0]);
@@ -20,7 +20,7 @@ public class StrMatchTest {
 	@Test
 	public void testKMP() throws Exception {
 		StrMatch s = new StrMatch();
-		LookBackStringBuffer lbsb = new LookBackStringBuffer(
+		StrMatch.LookBackStringBuffer lbsb = new StrMatch.LookBackStringBuffer(
 				"he\\llo world my name is ryan, but i can't play with black ppl.");
 		long result[] =s.knuthMorrisPratt(".", lbsb);
 		assertEquals(1, result[0]);
@@ -29,7 +29,7 @@ public class StrMatchTest {
 	@Test
 	public void testBM() throws Exception {
 		StrMatch s = new StrMatch();
-		LookBackStringBuffer lbsb = new LookBackStringBuffer(
+		StrMatch.LookBackStringBuffer lbsb = new StrMatch.LookBackStringBuffer(
 				"hello world my name is ryan, but i can't play with black ppl.");
 		assertEquals(1, s.boyerMoore("pl.", lbsb));
 	}
@@ -45,7 +45,7 @@ public class StrMatchTest {
 	public void testRK() throws IOException, Exception {
 		StrMatch s = new StrMatch();
 
-		LookBackStringBuffer lbsb = new LookBackStringBuffer("hello world");
+		StrMatch.LookBackStringBuffer lbsb = new StrMatch.LookBackStringBuffer("hello world");
 		// assertEquals(1, s.rabinKarp("h", lbsb));
 		// assertEquals(-1, s.rabinKarp("naem", lbsb));
 		// assertEquals(1, s.rabinKarp("hello ", lbsb));
