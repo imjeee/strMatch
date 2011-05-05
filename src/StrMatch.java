@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -293,6 +292,11 @@ public class StrMatch {
 	 * fastExp and reverseBits from Ryan's RSA project
 	 */
 	private static long fastExp(long num, long e, long n) {
+		
+		if(e == 0){
+			return 1%n;
+		}
+		
 		e = reverseBits(e);
 		int skipped = 0;
 		while ((e & 1l) != 1) {
