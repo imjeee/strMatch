@@ -1,3 +1,16 @@
+
+
+// Times worked on it
+// April 26 Ryan & Jie 3 hours
+// April 28 Ryan & Jie 2 hours
+// April 30 Ryan & Jie 2 hours
+// May 1st Ryan & Jie 3 hours
+// May 2nd Ryan & Jie 1 hour
+// May 3rd Ryan & Jie 1 hour
+// May 4th Ryan & Jie 1 hour
+// May 5th Ryan & Jie 6 hours
+// May 6th Jie 3 hours
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,10 +20,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class StrMatch {
+public class strMatch {
 
 	public static void main(String[] args) throws Exception {
 
+		/*
+		 * Jie coding
+		 */
 		if (args.length != 3) {
 			throw new IllegalArgumentException(
 					"usage: pattern.txt source.txt results.txt");
@@ -53,6 +69,9 @@ public class StrMatch {
 		}
 
 		try {
+			/*
+			 * Ryan driving here
+			 */
 			fr = new FileReader(source);
 			LookBackStringBuffer lbsb = new LookBackStringBuffer(source,
 					largestps);
@@ -136,6 +155,10 @@ public class StrMatch {
 
 	}
 
+	/*
+	 * Jie coding
+	 */
+	
 	// Brute Force Algorithm
 	public static long[] bruteForce(String pattern, LookBackStringBuffer source)
 			throws Exception {
@@ -187,6 +210,10 @@ public class StrMatch {
 			sourceHC += sourceCharInt;
 		}
 
+		
+		/*
+		 * Ryan driving now
+		 */
 		for (int i = pattern.length(); source.hasAvailable(i); i++) {
 			result[1]++;
 			if (patternHC == sourceHC) {
@@ -338,6 +365,10 @@ public class StrMatch {
 	// Knuth-Morris-Pratt Algorithm
 	public static long[] knuthMorrisPratt(String pattern,
 			LookBackStringBuffer source) throws Exception {
+		
+		/*
+		 * Jie coding
+		 */
 		assert (pattern.length() > 0) : "pattern cannot be empty";
 
 		long[] result = new long[2];
@@ -349,11 +380,11 @@ public class StrMatch {
 		int i = 0;
 		int[] T = partialMatchTable(w);
 
-		 for (int ii = 0; ii < T.length; ii++) {
+		 /*for (int ii = 0; ii < T.length; ii++) {
 		 System.out.print(T[ii]);
 		 }
 		 System.out.println();
-
+		  */
 		while (s.hasAvailable(m + i + 1)) {
 
 			result[1]++;
@@ -388,6 +419,9 @@ public class StrMatch {
 		int pos = 2;
 		int cnd = 0;
 
+		/*
+		 * Ryan driving now
+		 */
 		while (pos < pattern.length()) {
 			if (w.charAt(pos - 1) == w.charAt(cnd)) {
 				cnd++;
@@ -404,6 +438,9 @@ public class StrMatch {
 		return T;
 	}
 
+	/*
+	 * Jie coding
+	 */
 	// Boyer-Moore Algorithm
 	public static long[] boyerMoore(String pattern, LookBackStringBuffer source)
 			throws Exception {
@@ -523,7 +560,9 @@ public class StrMatch {
 	
 	
 	
-
+/*
+ * Ryan driving now
+ */
 	public static class LookBackStringBuffer {
 
 		private long length;
@@ -686,6 +725,9 @@ public class StrMatch {
 
 		public boolean hasAvailable(int x) {
 			/*int total = x;
+			 
+			 
+			//Jie coding
 			int lookFor = total - (offset + size);
 			if (lookFor <= 0)
 				return true;
@@ -708,7 +750,7 @@ public class StrMatch {
 				br.reset();
 				return true;
 			} catch (Exception e) {
-				return false;
+				return false;		
 			}*/
 			
 			return x <= length;
@@ -721,6 +763,9 @@ public class StrMatch {
 	 A class to measure time elapsed.
 	*/
 
+	/*
+	 * got stopwatch from Mike Scott
+	 */
 	public static class Stopwatch
 	{
 	    private long startTime;
